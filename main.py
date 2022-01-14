@@ -4,12 +4,25 @@ import csv
 COEF_X, COEF_Y = 0.05, 0.08
 SCREEN = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 WIDTH, HEIGHT = SCREEN.get_size()
+SPRITES_WIDTH, SPRITES_HEIGHT = WIDTH * COEF_X, HEIGHT * COEF_Y
 
 
 # Класс Монтгомери
 class Monty(pygame.sprite.Sprite):
     image = pygame.image.load("data\\BryceRight1.png")
-    image = pygame.transform.scale(image, (WIDTH * COEF_X, HEIGHT * COEF_Y))
+    image = pygame.transform.scale(image, (SPRITES_WIDTH, SPRITES_HEIGHT))
+    rect = image.get_rect()
+
+    def __init__(self, *group):
+        super().__init__(*group)
+
+    def update(self):
+        pass
+
+
+class Walls(pygame.sprite.Sprite):
+    image = pygame.image.load("data\\Wall.png")
+    image = pygame.transform.scale(image, (SPRITES_WIDTH, SPRITES_HEIGHT))
     rect = image.get_rect()
 
     def __init__(self, *group):
@@ -26,7 +39,8 @@ def main():
     fps = 60
     all_sprites = pygame.sprite.Group()
     player = Monty()
-    all_sprites.add(player)
+    wall = Walls()
+    all_sprites.add(player, wall)
     running = True
     while running:
         for event in pygame.event.get():
