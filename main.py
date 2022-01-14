@@ -47,13 +47,13 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
         key = pygame.key.get_pressed()
-        if key[pygame.K_UP]:
+        if key[pygame.K_w]:
             player.rect.top -= 10
-        if key[pygame.K_DOWN]:
+        if key[pygame.K_s]:
             player.rect.top += 10
-        if key[pygame.K_LEFT]:
+        if key[pygame.K_a]:
             player.rect.left -= 10
-        if key[pygame.K_RIGHT]:
+        if key[pygame.K_d]:
             player.rect.left += 10
         pygame.event.pump()
         SCREEN.fill((0, 0, 0))
