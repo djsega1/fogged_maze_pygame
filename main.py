@@ -1,8 +1,9 @@
 import pygame
 import csv
+from math import ceil
 
 COEF_X, COEF_Y = 0.05, 0.08
-SCREEN = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+SCREEN = pygame.display.set_mode((0, 0), pygame.RESIZABLE)
 WIDTH, HEIGHT = SCREEN.get_size()
 SPRITES_WIDTH, SPRITES_HEIGHT = WIDTH * COEF_X, HEIGHT * COEF_Y
 
@@ -39,8 +40,26 @@ def main():
     fps = 60
     all_sprites = pygame.sprite.Group()
     player = Monty()
-    wall = Walls()
-    all_sprites.add(player, wall)
+    walls = list()
+    # стены по периметру
+    for i in range(ceil(WIDTH / SPRITES_WIDTH)):
+        wall = Walls(all_sprites)
+        wall.rect.left = i * SPRITES_WIDTH
+        walls.append(wall)
+        wall = Walls(all_sprites)
+        wall.rect.left = i * SPRITES_WIDTH
+        wall.rect.top = HEIGHT - SPRITES_HEIGHT
+        walls.append(wall)
+    for i in range(ceil(HEIGHT / SPRITES_HEIGHT)):
+        wall = Walls(all_sprites)
+        wall.rect.top = i * SPRITES_HEIGHT
+        walls.append(wall)
+        wall = Walls(all_sprites)
+        wall.rect.left = WIDTH - SPRITES_WIDTH
+        wall.rect.top = i * SPRITES_HEIGHT
+        walls.append(wall)
+    # --
+    all_sprites.add(player)
     running = True
     while running:
         for event in pygame.event.get():
@@ -55,9 +74,9 @@ def main():
             player.rect.left -= 10
         if key[pygame.K_d]:
             player.rect.left += 10
-        pygame.event.pump()
         SCREEN.fill((0, 0, 0))
         all_sprites.draw(SCREEN)
+        pygame.event.pump()
         clock.tick(30)
         pygame.display.flip()
     pygame.quit()
