@@ -4,10 +4,6 @@ from buttons import *
 from sprites import *
 from asset_loader import *
 
-COEF_X, COEF_Y = 0.05, 0.08
-SCREEN = pygame.display.set_mode((0, 0), pygame.RESIZABLE)
-WIDTH, HEIGHT = SCREEN.get_size()
-SPRITES_WIDTH, SPRITES_HEIGHT = WIDTH * COEF_X, HEIGHT * COEF_Y
 pygame.init()
 
 
@@ -57,19 +53,23 @@ def main_menu():
 # Запуск уровня
 def play():
     clock = pygame.time.Clock()
-    Monty(500, 500, SPRITES_WIDTH, SPRITES_HEIGHT)
-    Walls(200, 200, SPRITES_WIDTH, SPRITES_HEIGHT)
+    player = Monty(SPRITES_WIDTH, SPRITES_HEIGHT)
+    Walls(500, 500, SPRITES_WIDTH, SPRITES_HEIGHT)
     while True:
+        clock.tick(30)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+        last_pos = (player.rect.x, player.rect.y)
         user.update(pygame.key.get_pressed())
+        for i in walls:
+            i.rect.topleft = (i.rect.left + (last_pos[0] - player.rect.x), i.rect.top + (last_pos[1] - player.rect.y))
+        player.rect.topleft = (WIDTH // 2 - player.rect.width // 2, HEIGHT // 2 - player.rect.height // 2)
         pygame.event.pump()
         SCREEN.fill((0, 0, 0))
         user.draw(SCREEN)
         walls.draw(SCREEN)
-        clock.tick(30)
         pygame.display.flip()
     pygame.quit()
 
