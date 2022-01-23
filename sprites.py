@@ -25,7 +25,7 @@ class Monty(Sprite):
 
     def __init__(self, x, y, SPRITES_WIDTH, SPRITES_HEIGHT):
         super().__init__(user)
-        self.images = load_image("right", SPRITES_WIDTH, SPRITES_HEIGHT)
+        self.images = load_image("Right", SPRITES_WIDTH, SPRITES_HEIGHT)
         self.ind = 0
         self.SPRITES_WIDTH = SPRITES_WIDTH
         self.SPRITES_HEIGHT = SPRITES_HEIGHT
@@ -42,12 +42,14 @@ class Monty(Sprite):
         if self.now_time > self.anim_time:
             self.now_time = 0
             self.ind = (self.ind + 1) % 3
+        self.anim_time = 1
         self.images = load_image(f"Idle{self.dir}", self.SPRITES_WIDTH, self.SPRITES_HEIGHT)
         self.image = self.images[self.ind]
         self.last = self.rect.copy()
         if key[pygame.K_w]:
             self.images = load_image("Back", self.SPRITES_WIDTH, self.SPRITES_HEIGHT)
             self.image = self.images[self.ind]
+            self.anim_time = 0.3
             self.dir = "Back"
             self.rect.top -= 10
             if pygame.sprite.spritecollideany(self, walls):
@@ -55,6 +57,7 @@ class Monty(Sprite):
         if key[pygame.K_s]:
             self.images = load_image("Front", self.SPRITES_WIDTH, self.SPRITES_HEIGHT)
             self.image = self.images[self.ind]
+            self.anim_time = 0.3
             self.dir = ""
             self.rect.top += 10
             if pygame.sprite.spritecollideany(self, walls):
@@ -62,6 +65,7 @@ class Monty(Sprite):
         if key[pygame.K_a]:
             self.images = load_image("Left", self.SPRITES_WIDTH, self.SPRITES_HEIGHT)
             self.image = self.images[self.ind]
+            self.anim_time = 0.3
             self.dir = "Left"
             self.rect.left -= 10
             if pygame.sprite.spritecollideany(self, walls):
@@ -69,6 +73,7 @@ class Monty(Sprite):
         if key[pygame.K_d]:
             self.images = load_image("Right", self.SPRITES_WIDTH, self.SPRITES_HEIGHT)
             self.image = self.images[self.ind]
+            self.anim_time = 0.3
             self.dir = "Right"
             self.rect.left += 10
             if pygame.sprite.spritecollideany(self, walls):
@@ -80,7 +85,7 @@ class Walls(Sprite):
 
     def __init__(self, x, y, SPRITES_WIDTH, SPRITES_HEIGHT):
         super().__init__(walls)
-        self.image = pygame.transform.scale(pygame.image.load("data\\Wall.png"),
+        self.image = pygame.transform.scale(pygame.image.load("assets\\Wall.png"),
                                             (SPRITES_WIDTH, SPRITES_HEIGHT))
         self.rect = self.image.get_rect()
         self.rect.left = x
