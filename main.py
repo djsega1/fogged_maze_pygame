@@ -1,110 +1,69 @@
 import pygame
-import csv
-
-
-class SpriteGroup(pygame.sprite.Group):
-
-    def __init__(self):
-        super().__init__()
-
-    def get_event(self, event):
-        for sprite in self:
-            sprite.get_event(event)
-
-
-class Sprite(pygame.sprite.Sprite):
-
-    def __init__(self, group):
-        super().__init__(group)
-
-    def get_event(self, event):
-        pass
-
-
-def load_image(image):
-    images = list()
-    for i in range(1, 5):
-        images.append(pygame.transform.scale(pygame.image.load(f"data\\Bryce{image}{i}.png"),
-                                             (SPRITES_WIDTH, SPRITES_HEIGHT)))
-    return images
-
+import sys
+from buttons import *
+from sprites import *
+from asset_loader import *
 
 COEF_X, COEF_Y = 0.05, 0.08
 SCREEN = pygame.display.set_mode((0, 0), pygame.RESIZABLE)
 WIDTH, HEIGHT = SCREEN.get_size()
 SPRITES_WIDTH, SPRITES_HEIGHT = WIDTH * COEF_X, HEIGHT * COEF_Y
-user, walls = SpriteGroup(), SpriteGroup()
+pygame.init()
 
 
-class Monty(Sprite):
+# Главное меню
+def main_menu():
+    ind = 0
+    anim_time = 5
+    now_time = 0
+    while True:
+        SCREEN.fill((0, 0, 0))
+        MENU_MOUSE_POS = pygame.mouse.get_pos()
+        if now_time > anim_time:
+            now_time = 0
+            ind = (ind + 1) % 3
+        images = load_image("Idle", 300, 300)
+        image = images[ind]
+        MENU_TEXT = get_font(80).render("Fogged Maze", True, "#b68f40")
+        MENU_RECT = MENU_TEXT.get_rect(topleft=(50, 50))
+        PLAY_BUTTON = Button(image=None, pos=(100, 300),
+                             text_input="PLAY", font=get_font(60), base_color="#694916", hovering_color="#bd8428")
+        # OPTIONS_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 400),
+        #                         text_input="OPTIONS", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
+        QUIT_BUTTON = Button(image=None, pos=(100, 450),
+                             text_input="QUIT", font=get_font(60), base_color="#694916", hovering_color="#bd8428")
+        SCREEN.blit(MENU_TEXT, MENU_RECT)
+        SCREEN.blit(image, (WIDTH // 1.5, HEIGHT // 6.5))
+        for button in [PLAY_BUTTON, QUIT_BUTTON]:
+            button.changeColor(MENU_MOUSE_POS)
+            button.update(SCREEN)
 
-    def __init__(self, x, y):
-        super().__init__(user)
-        self.images = load_image("right")
-        self.ind = 0
-        self.image = self.images[self.ind]
-        self.rect = self.images[0].get_rect()
-        self.rect.left = x
-        self.rect.top = y
-        self.last = self.rect.copy()
-
-    def update(self, key):
-        self.last = self.rect.copy()
-        if key[pygame.K_w]:
-            self.images = load_image("Back")
-            self.image = self.images[self.ind]
-            self.ind = (self.ind + 1) % 3
-            self.rect.top -= 10
-            if pygame.sprite.spritecollideany(self, walls):
-                self.rect.top += 10
-        if key[pygame.K_s]:
-            self.images = load_image("Front")
-            self.image = self.images[self.ind]
-            self.ind = (self.ind + 1) % 3
-            self.rect.top += 10
-            if pygame.sprite.spritecollideany(self, walls):
-                self.rect.top -= 10
-        if key[pygame.K_a]:
-            self.images = load_image("Left")
-            self.image = self.images[self.ind]
-            self.ind = (self.ind + 1) % 3
-            self.rect.left -= 10
-            if pygame.sprite.spritecollideany(self, walls):
-                self.rect.left += 10
-        if key[pygame.K_d]:
-            self.images = load_image("Right")
-            self.image = self.images[self.ind]
-            self.ind = (self.ind + 1) % 3
-            self.rect.left += 10
-            if pygame.sprite.spritecollideany(self, walls):
-                self.rect.left -= 10
-
-
-class Walls(Sprite):
-
-    def __init__(self, x, y):
-        super().__init__(walls)
-        self.image = pygame.transform.scale(pygame.image.load("data\\Wall.png"),
-                                            (SPRITES_WIDTH, SPRITES_HEIGHT))
-        self.rect = self.image.get_rect()
-        self.rect.left = x
-        self.rect.top = y
-
-    def update(self):
-        pass
-
-
-# Запуск игры
-def main():
-    pygame.init()
-    clock = pygame.time.Clock()
-    Monty(500, 500)
-    Walls(200, 200)
-    running = True
-    while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    play()
+                # if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
+                #     options()
+                if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    pygame.quit()
+                    sys.exit()
+        now_time += 30 / 1000
+        pygame.display.flip()
+
+
+# Запуск уровня
+def play():
+    clock = pygame.time.Clock()
+    Monty(500, 500, SPRITES_WIDTH, SPRITES_HEIGHT)
+    Walls(200, 200, SPRITES_WIDTH, SPRITES_HEIGHT)
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
         user.update(pygame.key.get_pressed())
         pygame.event.pump()
         SCREEN.fill((0, 0, 0))
@@ -116,4 +75,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main_menu()
