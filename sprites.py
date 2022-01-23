@@ -1,6 +1,12 @@
 import pygame
 from asset_loader import load_image
 
+COEF_X, COEF_Y = 0.05, 0.08
+SCREEN = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+WIDTH, HEIGHT = SCREEN.get_size()
+# SPRITES_WIDTH, SPRITES_HEIGHT = WIDTH * COEF_X, HEIGHT * COEF_Y
+SPRITES_WIDTH, SPRITES_HEIGHT = 80, 80
+
 
 class SpriteGroup(pygame.sprite.Group):
 
@@ -23,19 +29,19 @@ class Sprite(pygame.sprite.Sprite):
 
 class Monty(Sprite):
 
-    def __init__(self, x, y, SPRITES_WIDTH, SPRITES_HEIGHT):
+    def __init__(self, SPRITES_WIDTH, SPRITES_HEIGHT):
         super().__init__(user)
         self.images = load_image("Right", SPRITES_WIDTH, SPRITES_HEIGHT)
         self.ind = 0
         self.SPRITES_WIDTH = SPRITES_WIDTH
         self.SPRITES_HEIGHT = SPRITES_HEIGHT
         self.anim_time = 0.3
+        self.speed = 10
         self.now_time = 0
         self.dir = 'Right'
         self.image = self.images[self.ind]
         self.rect = self.images[0].get_rect()
-        self.rect.left = x
-        self.rect.top = y
+        self.rect.topleft = (WIDTH // 2 - self.rect.width // 2, HEIGHT // 2 - self.rect.height // 2)
         self.last = self.rect.copy()
 
     def update(self, key):
@@ -51,33 +57,34 @@ class Monty(Sprite):
             self.image = self.images[self.ind]
             self.anim_time = 0.3
             self.dir = "Back"
-            self.rect.top -= 10
+            self.rect.top -= self.speed
             if pygame.sprite.spritecollideany(self, walls):
-                self.rect.top += 10
+                self.rect.top += self.speed
         if key[pygame.K_s]:
             self.images = load_image("Front", self.SPRITES_WIDTH, self.SPRITES_HEIGHT)
             self.image = self.images[self.ind]
             self.anim_time = 0.3
             self.dir = ""
-            self.rect.top += 10
+            self.rect.top += self.speed
             if pygame.sprite.spritecollideany(self, walls):
-                self.rect.top -= 10
+                self.rect.top -= self.speed
         if key[pygame.K_a]:
             self.images = load_image("Left", self.SPRITES_WIDTH, self.SPRITES_HEIGHT)
             self.image = self.images[self.ind]
             self.anim_time = 0.3
             self.dir = "Left"
-            self.rect.left -= 10
+            self.rect.left -= self.speed
             if pygame.sprite.spritecollideany(self, walls):
-                self.rect.left += 10
+                self.rect.left += self.speed
         if key[pygame.K_d]:
             self.images = load_image("Right", self.SPRITES_WIDTH, self.SPRITES_HEIGHT)
             self.image = self.images[self.ind]
             self.anim_time = 0.3
             self.dir = "Right"
-            self.rect.left += 10
+            self.rect.left += self.speed
             if pygame.sprite.spritecollideany(self, walls):
-                self.rect.left -= 10
+                self.rect.left -= self.speed
+        SCREEN.scroll(10, 10)
         self.now_time += 30 / 1000
 
 
