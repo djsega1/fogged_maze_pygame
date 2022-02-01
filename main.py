@@ -53,8 +53,8 @@ def main_menu():
 # Запуск уровня
 def play():
     clock = pygame.time.Clock()
-    player = Monty(SPRITES_WIDTH, SPRITES_HEIGHT)
-    Walls(500, 500, SPRITES_WIDTH, SPRITES_HEIGHT)
+    player = Monty(0, 0, SPRITES_WIDTH, SPRITES_HEIGHT)
+    Walls(200, 200, SPRITES_WIDTH, SPRITES_HEIGHT, player.x, player.y)
     while True:
         clock.tick(30)
         for event in pygame.event.get():
@@ -76,3 +76,6 @@ def play():
 
 if __name__ == '__main__':
     main_menu()
+
+# TODO Arseniy: Adaptive Resolution, CSV
+# TODO Overall: Level Creator, Few Levels
