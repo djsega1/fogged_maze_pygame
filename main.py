@@ -5,7 +5,7 @@ from sprites import *
 from asset_loader import *
 
 pygame.init()
-
+map = [[0, 1, 0, 0, 1, 1]]
 
 # Главное меню
 def main_menu():
@@ -55,13 +55,17 @@ def main_menu():
 def play():
     clock = pygame.time.Clock()
     player = Monty(0, 0, SPRITES_WIDTH, SPRITES_HEIGHT)
-    Walls(200, 200, SPRITES_WIDTH, SPRITES_HEIGHT, player.x, player.y)
+    Wall(1, 1, SPRITES_WIDTH, SPRITES_HEIGHT, player.x, player.y)
     while True:
         clock.tick(30)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if pygame.key.get_pressed()[pygame.K_ESCAPE]:
+                user.empty()
+                walls.empty()
+                return
         last_pos = (player.rect.x, player.rect.y)
         user.update(pygame.key.get_pressed())
         for i in walls:
@@ -72,7 +76,6 @@ def play():
         user.draw(SCREEN)
         walls.draw(SCREEN)
         pygame.display.flip()
-    pygame.quit()
 
 
 if __name__ == '__main__':

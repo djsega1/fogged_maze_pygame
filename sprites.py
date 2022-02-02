@@ -38,8 +38,8 @@ class Monty(Sprite):
         self.anim_time = 0.3
         self.speed = 10
         self.now_time = 0
-        self.x = x
-        self.y = y
+        self.x = x * SPRITES_WIDTH
+        self.y = y * SPRITES_HEIGHT
         self.dir = 'Right'
         self.image = self.images[self.ind]
         self.rect = self.images[0].get_rect()
@@ -90,15 +90,18 @@ class Monty(Sprite):
         self.now_time += 30 / 1000
 
 
-class Walls(Sprite):
+class Wall(Sprite):
 
     def __init__(self, x, y, SPRITES_WIDTH, SPRITES_HEIGHT, player_x, player_y):
         super().__init__(walls)
         self.image = pygame.transform.scale(pygame.image.load("assets\\Wall.png"),
                                             (SPRITES_WIDTH, SPRITES_HEIGHT))
+
+
+
         self.rect = self.image.get_rect()
-        self.rect.topleft = (WIDTH // 2 - self.rect.width // 2 + (x - player_x),
-                             HEIGHT // 2 - self.rect.height // 2 + (y - player_y))
+        self.rect.topleft = (WIDTH // 2 - self.rect.width // 2 + (x * SPRITES_WIDTH - player_x),
+                             HEIGHT // 2 - self.rect.height // 2 + (y * SPRITES_HEIGHT - player_y))
 
     def update(self):
         pass
