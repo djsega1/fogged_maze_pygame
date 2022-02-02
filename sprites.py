@@ -97,7 +97,19 @@ class Wall(Sprite):
         self.image = pygame.transform.scale(pygame.image.load("assets\\Wall.png"),
                                             (SPRITES_WIDTH, SPRITES_HEIGHT))
 
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (WIDTH // 2 - self.rect.width // 2 + (x * SPRITES_WIDTH - player_x),
+                             HEIGHT // 2 - self.rect.height // 2 + (y * SPRITES_HEIGHT - player_y))
 
+    def update(self):
+        pass
+
+
+class Road(Sprite):
+    def __init__(self, x, y, SPRITES_WIDTH, SPRITES_HEIGHT, player_x, player_y):
+        super().__init__(roads)
+        self.image = pygame.transform.scale(pygame.image.load(f"assets\\Road1.png"),
+                                            (SPRITES_WIDTH, SPRITES_HEIGHT))
 
         self.rect = self.image.get_rect()
         self.rect.topleft = (WIDTH // 2 - self.rect.width // 2 + (x * SPRITES_WIDTH - player_x),
@@ -107,4 +119,4 @@ class Wall(Sprite):
         pass
 
 
-user, walls = SpriteGroup(), SpriteGroup()
+user, walls, roads = SpriteGroup(), SpriteGroup(), SpriteGroup()

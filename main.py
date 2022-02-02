@@ -59,10 +59,10 @@ def play():
     lvl = levels[1]
     for row in range(len(lvl)):
         for col in range(len(lvl[row])):
-            if lvl[row][col]:
+            if lvl[row][col] == 1:
                 Wall(col, row, SPRITES_WIDTH, SPRITES_HEIGHT, player.x, player.y)
-            # elif not lvl[row][col]:
-            #     Road(col, row, SPRITES_WIDTH, SPRITES_HEIGHT, player.x, player.y)
+            elif lvl[row][col] == 0:
+                Road(col, row, SPRITES_WIDTH, SPRITES_HEIGHT, player.x, player.y)
     while True:
         clock.tick(30)
         for event in pygame.event.get():
@@ -77,9 +77,12 @@ def play():
         user.update(pygame.key.get_pressed())
         for i in walls:
             i.rect.topleft = (i.rect.left + (last_pos[0] - player.rect.x), i.rect.top + (last_pos[1] - player.rect.y))
+        for i in roads:
+            i.rect.topleft = (i.rect.left + (last_pos[0] - player.rect.x), i.rect.top + (last_pos[1] - player.rect.y))
         player.rect.topleft = (WIDTH // 2 - player.rect.width // 2, HEIGHT // 2 - player.rect.height // 2)
         pygame.event.pump()
         SCREEN.fill((0, 0, 0))
+        roads.draw(SCREEN)
         user.draw(SCREEN)
         walls.draw(SCREEN)
         pygame.display.flip()
@@ -88,5 +91,4 @@ def play():
 if __name__ == '__main__':
     main_menu()
 
-# TODO Arseniy: CSV
-# TODO Overall: Level Creator, Few Levels
+# TODO Overall: Few Levels, Buffs, De-Buffs, CSV, Borders on tiles, Scoreboard
