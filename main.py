@@ -31,11 +31,10 @@ def main_menu():
                              text_input="QUIT", font=get_font(int(0.06 * HEIGHT)),
                              base_color="#694916", hovering_color="#bd8428")
         SCREEN.blit(MENU_TEXT, MENU_RECT)
-        SCREEN.blit(image, (int(WIDTH * 0.65), int(HEIGHT * 0.225)))
+        SCREEN.blit(image, (int(WIDTH * 0.65), MENU_RECT.top + MENU_RECT.h))
         for button in [PLAY_BUTTON, QUIT_BUTTON]:
             button.changeColor(MENU_MOUSE_POS)
             button.update(SCREEN)
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
