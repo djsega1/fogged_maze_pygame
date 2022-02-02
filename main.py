@@ -6,6 +6,7 @@ from asset_loader import *
 
 pygame.init()
 
+
 # Главное меню
 def main_menu():
     ind = 0
@@ -17,16 +18,18 @@ def main_menu():
         if now_time > anim_time:
             now_time = 0
             ind = (ind + 1) % 3
-        images = load_image("Idle", int(HEIGHT * 0.5), int(HEIGHT * 0.5))
+        images = load_image("Idle", int(HEIGHT * 0.4), int(HEIGHT * 0.4))
         image = images[ind]
-        MENU_TEXT = get_font(80).render("Fogged Maze", True, "#b68f40")
+        MENU_TEXT = get_font(int(0.07 * HEIGHT)).render("Fogged Maze", True, "#b68f40")
         MENU_RECT = MENU_TEXT.get_rect(topleft=(int(WIDTH * 0.1), int(WIDTH * 0.125)))
         PLAY_BUTTON = Button(image=None, pos=(int(WIDTH * 0.2), int(WIDTH * 0.25)),
-                             text_input="PLAY", font=get_font(70), base_color="#694916", hovering_color="#bd8428")
+                             text_input="PLAY", font=get_font(int(0.06 * HEIGHT)),
+                             base_color="#694916", hovering_color="#bd8428")
         # OPTIONS_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 400),
         #                         text_input="OPTIONS", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
         QUIT_BUTTON = Button(image=None, pos=(int(WIDTH * 0.2), int(WIDTH * 0.35)),
-                             text_input="QUIT", font=get_font(70), base_color="#694916", hovering_color="#bd8428")
+                             text_input="QUIT", font=get_font(int(0.06 * HEIGHT)),
+                             base_color="#694916", hovering_color="#bd8428")
         SCREEN.blit(MENU_TEXT, MENU_RECT)
         SCREEN.blit(image, (int(WIDTH * 0.65), int(HEIGHT * 0.225)))
         for button in [PLAY_BUTTON, QUIT_BUTTON]:
