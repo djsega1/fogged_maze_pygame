@@ -3,9 +3,10 @@ import sys
 from buttons import *
 from sprites import *
 from asset_loader import *
+from maps import levels
 
 pygame.init()
-map = [[0, 1, 0, 0, 1, 1]]
+
 
 # Главное меню
 def main_menu():
@@ -54,8 +55,14 @@ def main_menu():
 # Запуск уровня
 def play():
     clock = pygame.time.Clock()
-    player = Monty(0, 0, SPRITES_WIDTH, SPRITES_HEIGHT)
-    Wall(1, 1, SPRITES_WIDTH, SPRITES_HEIGHT, player.x, player.y)
+    player = Monty(1, 1, SPRITES_WIDTH, SPRITES_HEIGHT)
+    lvl = levels[1]
+    for row in range(len(lvl)):
+        for col in range(len(lvl[row])):
+            if lvl[row][col]:
+                Wall(col, row, SPRITES_WIDTH, SPRITES_HEIGHT, player.x, player.y)
+            # elif not lvl[row][col]:
+            #     Road(col, row, SPRITES_WIDTH, SPRITES_HEIGHT, player.x, player.y)
     while True:
         clock.tick(30)
         for event in pygame.event.get():
