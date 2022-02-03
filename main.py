@@ -14,6 +14,9 @@ def main_menu():
     ind = 0
     anim_time = 5
     now_time = 0
+    pygame.mixer.music.load("assets\\main.mp3")
+    pygame.mixer.music.set_volume(0.1)
+    pygame.mixer.music.play(loops=-1)
     while True:
         SCREEN.fill((0, 0, 0))
         MENU_MOUSE_POS = pygame.mouse.get_pos()
@@ -75,6 +78,9 @@ def play():
                 BootsBuff(col, row, SPRITES_WIDTH, SPRITES_HEIGHT, player, "boots")
             elif lvl[row][col] == 3:
                 LanternBuff(col, row, SPRITES_WIDTH, SPRITES_HEIGHT, player, "lantern")
+    pygame.mixer.music.load("assets\\level.mp3")
+    pygame.mixer.music.set_volume(0.1)
+    pygame.mixer.music.play(loops=-1)
     while True:
         clock.tick(30)
         for event in pygame.event.get():
@@ -84,6 +90,11 @@ def play():
             if pygame.key.get_pressed()[pygame.K_ESCAPE]:
                 user.empty()
                 walls.empty()
+                buffs.empty()
+                SCREEN.set_clip((0, 0, WIDTH, HEIGHT))
+                pygame.mixer.music.load("assets\\main.mp3")
+                pygame.mixer.music.set_volume(0.1)
+                pygame.mixer.music.play(loops=-1)
                 return
         last_pos = (player.rect.x, player.rect.y)
         user.update(pygame.key.get_pressed())

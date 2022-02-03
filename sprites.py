@@ -47,9 +47,6 @@ class Monty(Sprite):
         self.rect = self.images[0].get_rect()
         self.rect.topleft = (WIDTH // 2 - self.rect.width // 2, HEIGHT // 2 - self.rect.height // 2)
         self.last = self.rect.copy()
-        # pygame.mixer.music.load("assets\\walk.mp3")
-        # pygame.mixer.music.play(loops=-1)
-        # pygame.mixer.music.pause()
 
     def update(self, key):
         self.vision_x = self.mp * SPRITES_WIDTH
