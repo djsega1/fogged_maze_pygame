@@ -120,4 +120,4 @@ def play():
 if __name__ == '__main__':
     main_menu()
 
-# TODO Overall: Few Levels, Buffs, De-Buffs, CSV, Borders on tiles, Scoreboard
+# TODO Overall: Few Levels, CSV, Scoreboard, Hard Mode
