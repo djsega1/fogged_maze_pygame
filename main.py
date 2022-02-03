@@ -1,6 +1,7 @@
 import pygame
 import sys
 from buttons import *
+from buffs import *
 from sprites import *
 from asset_loader import *
 from maps import levels
@@ -63,6 +64,8 @@ def play():
                 Wall(col, row, SPRITES_WIDTH, SPRITES_HEIGHT, player.x, player.y)
             elif lvl[row][col] == 0:
                 Road(col, row, SPRITES_WIDTH, SPRITES_HEIGHT, player.x, player.y)
+            elif lvl[row][col] == 2:
+                BootsBuff(col, row, SPRITES_WIDTH, SPRITES_HEIGHT, player, "lantern")
     while True:
         clock.tick(30)
         for event in pygame.event.get():
@@ -75,14 +78,18 @@ def play():
                 return
         last_pos = (player.rect.x, player.rect.y)
         user.update(pygame.key.get_pressed())
+        buffs.update()
         for i in walls:
             i.rect.topleft = (i.rect.left + (last_pos[0] - player.rect.x), i.rect.top + (last_pos[1] - player.rect.y))
         for i in roads:
             i.rect.topleft = (i.rect.left + (last_pos[0] - player.rect.x), i.rect.top + (last_pos[1] - player.rect.y))
+        for i in buffs:
+            i.rect.topleft = (i.rect.left + (last_pos[0] - player.rect.x), i.rect.top + (last_pos[1] - player.rect.y))
         player.rect.topleft = (WIDTH // 2 - player.rect.width // 2, HEIGHT // 2 - player.rect.height // 2)
         pygame.event.pump()
         SCREEN.fill((0, 0, 0))
-        roads.draw(SCREEN)
+        # roads.draw(SCREEN)
+        buffs.draw(SCREEN)
         user.draw(SCREEN)
         walls.draw(SCREEN)
         pygame.display.flip()

@@ -4,7 +4,6 @@ from asset_loader import load_image
 COEF_X, COEF_Y = 0.05, 0.08
 SCREEN = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 WIDTH, HEIGHT = SCREEN.get_size()
-# SPRITES_WIDTH, SPRITES_HEIGHT = WIDTH * COEF_X, HEIGHT * COEF_Y
 SPRITES_WIDTH, SPRITES_HEIGHT = 80, 80
 
 
