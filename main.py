@@ -65,7 +65,7 @@ def play():
             elif lvl[row][col] == 0:
                 Road(col, row, SPRITES_WIDTH, SPRITES_HEIGHT, player.x, player.y)
             elif lvl[row][col] == 2:
-                BootsBuff(col, row, SPRITES_WIDTH, SPRITES_HEIGHT, player, "lantern")
+                BootsBuff(col, row, SPRITES_WIDTH, SPRITES_HEIGHT, player, "boots")
     while True:
         clock.tick(30)
         for event in pygame.event.get():
