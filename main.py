@@ -4,7 +4,7 @@ from buttons import *
 from buffs import *
 from sprites import *
 from asset_loader import *
-from maps import levels
+from PIL import Image
 
 pygame.init()
 
@@ -67,17 +67,30 @@ def play():
         SCREEN.blit(s, (0, 0))
         pygame.display.flip()
         pygame.time.delay(100)
-    lvl = levels[1]
-    for row in range(len(lvl)):
-        for col in range(len(lvl[row])):
-            if lvl[row][col] == 1:
-                Wall(col, row, SPRITES_WIDTH, SPRITES_HEIGHT, player.x, player.y)
-            elif lvl[row][col] == 0:
-                Road(col, row, SPRITES_WIDTH, SPRITES_HEIGHT, player.x, player.y)
-            elif lvl[row][col] == 2:
-                BootsBuff(col, row, SPRITES_WIDTH, SPRITES_HEIGHT, player, "boots")
-            elif lvl[row][col] == 3:
-                LanternBuff(col, row, SPRITES_WIDTH, SPRITES_HEIGHT, player, "lantern")
+    user_progress = 1
+    progress_bar_sur = pygame.Surface(SCREEN.get_size())
+    lvl_file = Image.open(f'mazes\\maze{user_progress}.png')
+    lvl_crop = lvl_file.crop((0, 0, 100, 100))
+    x, y = lvl_crop.size
+    lvl = lvl_crop.load()
+    cnt = 0
+    for row in range(y):
+        for col in range(x):
+            if lvl[row, col] == (0, 0, 0):
+                Wall(row, col, SPRITES_WIDTH, SPRITES_HEIGHT, player.x, player.y)
+            elif lvl[row, col] == (255, 255, 255):
+                Road(row, col, SPRITES_WIDTH, SPRITES_HEIGHT, player.x, player.y)
+            elif lvl[row, col] == (255, 0, 0):
+                BootsBuff(row, col, SPRITES_WIDTH, SPRITES_HEIGHT, player, "boots")
+            elif lvl[row, col] == (0, 255, 0):
+                LanternBuff(row, col, SPRITES_WIDTH, SPRITES_HEIGHT, player, "lantern")
+            cnt += 1
+            # pygame.draw.rect(progress_bar_sur, (255, 255, 255), pygame.Rect(500, 500, 500 * (cnt // 10000), 250))
+            pygame.draw.rect(progress_bar_sur, (128, 128, 128), pygame.Rect(500, 500, 500, 250), 1)
+            pygame.draw.rect(progress_bar_sur, (0, 255, 0), pygame.Rect(500, 500, int((10000 / 10000) * cnt), 250))
+            SCREEN.blit(progress_bar_sur, (0, 0))
+            pygame.display.flip()
+    SCREEN.fill((0, 0, 0))
     pygame.mixer.music.load("assets\\level.mp3")
     pygame.mixer.music.set_volume(0.1)
     pygame.mixer.music.play(loops=-1)
