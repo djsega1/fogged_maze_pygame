@@ -19,13 +19,18 @@ class Buff(Sprite):
 
 # Яркая лампа
 class LanternBuff(Buff):
-    pass
+    def update(self):
+        if pygame.sprite.spritecollideany(self, user):
+            pygame.mixer.Sound("assets\\buff.ogg").play()
+            self.player.mp += 2
+            self.kill()
 
 
 # Удобные сапоги
 class BootsBuff(Buff):
     def update(self):
         if pygame.sprite.spritecollideany(self, user):
+            pygame.mixer.Sound("assets\\buff.ogg").play()
             self.player.speed += 5
             self.kill()
 

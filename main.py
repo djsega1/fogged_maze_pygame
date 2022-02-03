@@ -57,6 +57,13 @@ def main_menu():
 def play():
     clock = pygame.time.Clock()
     player = Monty(1, 1, SPRITES_WIDTH, SPRITES_HEIGHT)
+    s = pygame.Surface((WIDTH, HEIGHT))
+    s.fill((0, 0, 0))
+    for opacity in range(0, 255, 20):
+        s.set_alpha(opacity)
+        SCREEN.blit(s, (0, 0))
+        pygame.display.flip()
+        pygame.time.delay(100)
     lvl = levels[1]
     for row in range(len(lvl)):
         for col in range(len(lvl[row])):
@@ -66,6 +73,8 @@ def play():
                 Road(col, row, SPRITES_WIDTH, SPRITES_HEIGHT, player.x, player.y)
             elif lvl[row][col] == 2:
                 BootsBuff(col, row, SPRITES_WIDTH, SPRITES_HEIGHT, player, "boots")
+            elif lvl[row][col] == 3:
+                LanternBuff(col, row, SPRITES_WIDTH, SPRITES_HEIGHT, player, "lantern")
     while True:
         clock.tick(30)
         for event in pygame.event.get():
@@ -87,8 +96,10 @@ def play():
             i.rect.topleft = (i.rect.left + (last_pos[0] - player.rect.x), i.rect.top + (last_pos[1] - player.rect.y))
         player.rect.topleft = (WIDTH // 2 - player.rect.width // 2, HEIGHT // 2 - player.rect.height // 2)
         pygame.event.pump()
+        SCREEN.set_clip((player.rect.left - player.vision_x, player.rect.top - player.vision_y,
+                         player.rect.width + player.vision_x * 2,
+                         player.rect.height + player.vision_y * 2))
         SCREEN.fill((0, 0, 0))
-        # roads.draw(SCREEN)
         buffs.draw(SCREEN)
         user.draw(SCREEN)
         walls.draw(SCREEN)
