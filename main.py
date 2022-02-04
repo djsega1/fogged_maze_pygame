@@ -100,18 +100,32 @@ def black_screen():
 
 
 def scoreboard(results):
+    global HIGH
     s = pygame.Surface(SCREEN.get_size())
     s.fill((0, 0, 0))
-    score_text = get_font(int(0.07 * HEIGHT)).render(f"Your score:{results.score}", True, "#b68f40")
-    score_rect = score_text.get_rect(topleft=(int(WIDTH * 0.1), int(WIDTH * 0.125)))
-
-    buffs_text = get_font(int(0.07 * HEIGHT)).render(f"Lanter: {results.lanter_pickup}\nBoots: {results.boots_pickup}",
-                                                     True, "#b68f40")
-    buffs_rect = buffs_text.get_rect(topleft=(int(WIDTH * 0.3), int(WIDTH * 0.125)))
+    score_text = get_font(int(0.07 * HEIGHT)).render(f"Your score:{results.score}", False, (255, 255, 255))
+    score_rect = score_text.get_rect(topleft=(int(WIDTH * 0.1), int(WIDTH * 0.1)))
+    lanterns_text = get_font(int(0.07 * HEIGHT)).render(f"Lanterns: {results.lantern_pickup}",
+                                                        False, (255, 255, 255))
+    lanterns_rect = lanterns_text.get_rect(topleft=(int(WIDTH * 0.1), int(HEIGHT * 0.3)))
+    boots_text = get_font(int(0.07 * HEIGHT)).render(f"Boots: {results.boots_pickup}",
+                                                     False, (255, 255, 255))
+    boots_rect = boots_text.get_rect(topleft=(int(WIDTH * 0.1), int(HEIGHT * 0.5)))
     s.blit(score_text, score_rect)
-    s.blit(buffs_text, buffs_rect)
+    s.blit(lanterns_text, lanterns_rect)
+    s.blit(boots_text, boots_rect)
     SCREEN.blit(s, (0, 0))
-    keyboard.wait('1')
+    pygame.display.flip()
+    for i in range(5, -1, -1):
+        x = s.copy()
+        go_back_text = get_font(int(0.07 * HEIGHT)).render(f"Go back in {i}...", False, (255, 255, 255))
+        go_back_rect = boots_text.get_rect(topleft=(int(WIDTH * 0.1), int(HEIGHT * 0.8)))
+        x.blit(go_back_text, go_back_rect)
+        SCREEN.blit(x, (0, 0))
+        pygame.time.delay(1000)
+        pygame.display.flip()
+    if results.score > HIGH:
+        HIGH = results.score
 
 
 # Запуск уровня
@@ -120,16 +134,15 @@ def play():
     player = Monty(1, 1, SPRITES_WIDTH, SPRITES_HEIGHT)
     pygame.mouse.set_visible(False)
     black_screen()
-    user_progress = 2
+    user_progress = 1
     progress_bar_sur = pygame.Surface(SCREEN.get_size())
     lvl_file = Image.open(f'mazes\\maze{user_progress}.png')
-    lvl_crop = lvl_file.crop((0, 0, 100, 100))
+    lvl_crop = lvl_file.crop((0, 0, 11, 11))
     x, y = lvl_crop.size
     lvl = lvl_crop.load()
     cnt = 0
     for row in range(y):
         for col in range(x):
-            print(lvl[row, col])
             if lvl[row, col][:3] == (0, 0, 0):
                 Wall(row, col, SPRITES_WIDTH, SPRITES_HEIGHT, player.x, player.y)
             elif lvl[row, col][:3] == (255, 255, 255):
@@ -159,6 +172,7 @@ def play():
             if pygame.key.get_pressed()[pygame.K_ESCAPE]:
                 black_screen()
                 exit_to_main()
+                scoreboard(player)
                 return
         last_pos = (player.rect.x, player.rect.y)
         user.update(pygame.key.get_pressed())
@@ -199,5 +213,3 @@ def end():
 
 if __name__ == '__main__':
     main_menu()
-
-# TODO: score booster, scoreboard
