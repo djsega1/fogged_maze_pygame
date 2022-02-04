@@ -81,6 +81,7 @@ def hard():
 def exit_to_main():
     pygame.mouse.set_visible(True)
     user.empty()
+    exit.empty()
     walls.empty()
     buffs.empty()
     SCREEN.set_clip((0, 0, WIDTH, HEIGHT))
@@ -101,25 +102,33 @@ def black_screen():
 
 def scoreboard(results):
     global HIGH
+    if not results.escaped:
+        results.score = 0
+    if results.score < 1:
+        result_text = get_font(int(0.07 * HEIGHT)).render(f"LEVEL FAILED", False, (255, 0, 0))
+    else:
+        result_text = get_font(int(0.06 * HEIGHT)).render(f"LEVEL COMPLETED", False, (0, 255, 0))
+    result_rect = result_text.get_rect(topleft=(int(WIDTH * 0.1), int(WIDTH * 0.1)))
     s = pygame.Surface(SCREEN.get_size())
     s.fill((0, 0, 0))
     score_text = get_font(int(0.07 * HEIGHT)).render(f"Your score:{results.score}", False, (255, 255, 255))
-    score_rect = score_text.get_rect(topleft=(int(WIDTH * 0.1), int(WIDTH * 0.1)))
+    score_rect = score_text.get_rect(topleft=(int(WIDTH * 0.1), int(WIDTH * 0.2)))
     lanterns_text = get_font(int(0.07 * HEIGHT)).render(f"Lanterns: {results.lantern_pickup}",
                                                         False, (255, 255, 255))
-    lanterns_rect = lanterns_text.get_rect(topleft=(int(WIDTH * 0.1), int(HEIGHT * 0.3)))
+    lanterns_rect = lanterns_text.get_rect(topleft=(int(WIDTH * 0.1), int(HEIGHT * 0.45)))
     boots_text = get_font(int(0.07 * HEIGHT)).render(f"Boots: {results.boots_pickup}",
                                                      False, (255, 255, 255))
-    boots_rect = boots_text.get_rect(topleft=(int(WIDTH * 0.1), int(HEIGHT * 0.5)))
+    boots_rect = boots_text.get_rect(topleft=(int(WIDTH * 0.1), int(HEIGHT * 0.6)))
     s.blit(score_text, score_rect)
     s.blit(lanterns_text, lanterns_rect)
     s.blit(boots_text, boots_rect)
+    s.blit(result_text, result_rect)
     SCREEN.blit(s, (0, 0))
     pygame.display.flip()
     for i in range(5, -1, -1):
         x = s.copy()
         go_back_text = get_font(int(0.07 * HEIGHT)).render(f"Go back in {i}...", False, (255, 255, 255))
-        go_back_rect = boots_text.get_rect(topleft=(int(WIDTH * 0.1), int(HEIGHT * 0.8)))
+        go_back_rect = boots_text.get_rect(topleft=(int(WIDTH * 0.1), int(HEIGHT * 0.9)))
         x.blit(go_back_text, go_back_rect)
         SCREEN.blit(x, (0, 0))
         pygame.time.delay(1000)
@@ -177,11 +186,14 @@ def play():
         last_pos = (player.rect.x, player.rect.y)
         user.update(pygame.key.get_pressed())
         buffs.update()
+        exit.update()
         for i in walls:
             i.rect.topleft = (i.rect.left + (last_pos[0] - player.rect.x), i.rect.top + (last_pos[1] - player.rect.y))
         for i in roads:
             i.rect.topleft = (i.rect.left + (last_pos[0] - player.rect.x), i.rect.top + (last_pos[1] - player.rect.y))
         for i in buffs:
+            i.rect.topleft = (i.rect.left + (last_pos[0] - player.rect.x), i.rect.top + (last_pos[1] - player.rect.y))
+        for i in exit:
             i.rect.topleft = (i.rect.left + (last_pos[0] - player.rect.x), i.rect.top + (last_pos[1] - player.rect.y))
         player.rect.topleft = (WIDTH // 2 - player.rect.width // 2, HEIGHT // 2 - player.rect.height // 2)
         pygame.event.pump()
@@ -189,11 +201,17 @@ def play():
                          player.rect.width + player.vision_x * 2,
                          player.rect.height + player.vision_y * 2))
         if HARD:
+            if player.score < 1:
+                black_screen()
+                exit_to_main()
+                scoreboard(player)
+                return
             buffs.empty()
-            player.score -= 40
+        player.score -= 40
         SCREEN.fill((0, 0, 0))
         buffs.draw(SCREEN)
         user.draw(SCREEN)
+        exit.draw(SCREEN)
         walls.draw(SCREEN)
         if player.escaped or not player.score:
             black_screen()
