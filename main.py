@@ -38,6 +38,10 @@ def main_menu():
         image = images[ind]
         MENU_TEXT = get_font(int(0.07 * HEIGHT)).render("Fogged Maze", True, "#b68f40")
         MENU_RECT = MENU_TEXT.get_rect(topleft=(int(WIDTH * 0.1), int(WIDTH * 0.125)))
+        HIGH_TEXT = get_font(int(0.04 * HEIGHT)).render(f"HIGHEST SCORE", False, (255, 255, 255))
+        HIGH_RECT = HIGH_TEXT.get_rect(topleft=(int(WIDTH * 0.1), int(HEIGHT * 0.8)))
+        SCORE_TEXT = get_font(int(0.04 * HEIGHT)).render(f"{HIGH}", False, (255, 255, 255))
+        SCORE_RECT = SCORE_TEXT.get_rect(topleft=(HIGH_RECT.left * 1.1, HIGH_RECT.top + HIGH_RECT.height + 30))
         PLAY_BUTTON = Button(image=None, pos=(int(WIDTH * 0.2), int(WIDTH * 0.25)),
                              text_input="PLAY", font=get_font(int(0.06 * HEIGHT)),
                              base_color="#694916", hovering_color="#bd8428")
@@ -53,6 +57,8 @@ def main_menu():
                              base_color="#694916", hovering_color="#bd8428")
         SCREEN.blit(MENU_TEXT, MENU_RECT)
         SCREEN.blit(image, (int(WIDTH * 0.65), MENU_RECT.top + MENU_RECT.h))
+        SCREEN.blit(HIGH_TEXT, HIGH_RECT)
+        SCREEN.blit(SCORE_TEXT, SCORE_RECT)
         for button in [PLAY_BUTTON, QUIT_BUTTON, MODE_BUTTON]:
             button.changeColor(MENU_MOUSE_POS)
             button.update(SCREEN)
