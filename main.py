@@ -9,6 +9,9 @@ from csv import reader, writer
 import os
 
 pygame.init()
+pygame.display.set_caption('Fogged Maze')
+pygame.display.set_icon(pygame.transform.scale(pygame.image.load(f"assets\\BryceRight1.png"),
+                                               (SPRITES_WIDTH, SPRITES_HEIGHT)))
 with open("data.csv", "r+") as csvfile:
     for i in reader(csvfile, delimiter=";"):
         HARD = int(i[1])
@@ -75,6 +78,7 @@ def hard():
 
 
 def exit_to_main():
+    pygame.mouse.set_visible(True)
     user.empty()
     walls.empty()
     buffs.empty()
@@ -98,6 +102,7 @@ def black_screen():
 def play():
     clock = pygame.time.Clock()
     player = Monty(1, 1, SPRITES_WIDTH, SPRITES_HEIGHT)
+    pygame.mouse.set_visible(False)
     black_screen()
     user_progress = 2
     progress_bar_sur = pygame.Surface(SCREEN.get_size())
@@ -177,4 +182,4 @@ def end():
 if __name__ == '__main__':
     main_menu()
 
-# TODO Overall: Few Levels, CSV, Scoreboard, Hard Mode
+# TODO Overall: Scoreboard, Hard Mode
