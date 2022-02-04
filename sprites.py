@@ -36,6 +36,9 @@ class Monty(Sprite):
         self.SPRITES_HEIGHT = SPRITES_HEIGHT
         self.escaped = False
         self.mp = 2
+        self.boots_pickup = False
+        self.lanter_pickup = False
+        self.score = 900000
         self.vision_x = self.mp * SPRITES_WIDTH
         self.vision_y = self.mp * SPRITES_HEIGHT
         self.anim_time = 0.3

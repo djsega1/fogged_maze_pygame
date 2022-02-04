@@ -5,8 +5,9 @@ from buffs import *
 from sprites import *
 from asset_loader import *
 from PIL import Image
-from csv import reader
+from csv import *
 import os
+import keyboard
 
 pygame.init()
 with open("data.csv", "r+") as csvfile:
@@ -94,6 +95,21 @@ def black_screen():
         pygame.time.delay(100)
 
 
+def scoreboard(results):
+    s = pygame.Surface(SCREEN.get_size())
+    s.fill((0, 0, 0))
+    score_text = get_font(int(0.07 * HEIGHT)).render(f"Your score:{results.score}", True, "#b68f40")
+    score_rect = score_text.get_rect(topleft=(int(WIDTH * 0.1), int(WIDTH * 0.125)))
+
+    buffs_text = get_font(int(0.07 * HEIGHT)).render(f"Lanter: {results.lanter_pickup}\nBoots: {results.boots_pickup}",
+                                                     True, "#b68f40")
+    buffs_rect = buffs_text.get_rect(topleft=(int(WIDTH * 0.3), int(WIDTH * 0.125)))
+    s.blit(score_text, score_rect)
+    s.blit(buffs_text, buffs_rect)
+    SCREEN.blit(s, (0, 0))
+    keyboard.wait('1')
+
+
 # Запуск уровня
 def play():
     clock = pygame.time.Clock()
@@ -120,8 +136,10 @@ def play():
                 Exit(row, col, SPRITES_WIDTH, SPRITES_WIDTH, player, 'exit_portal')
             cnt += 1
             # pygame.draw.rect(progress_bar_sur, (255, 255, 255), pygame.Rect(500, 500, 500 * (cnt // 10000), 250))
-            pygame.draw.rect(progress_bar_sur, (128, 128, 128), pygame.Rect(HEIGHT - 250, WIDTH - 25, WIDTH - 200, 250), 1)
-            pygame.draw.rect(progress_bar_sur, (0, 255, 0), pygame.Rect(100, HEIGHT - 250, int(((WIDTH - 200) / 10000) * cnt), 100))
+            pygame.draw.rect(progress_bar_sur, (128, 128, 128), pygame.Rect(HEIGHT - 250, WIDTH - 25, WIDTH - 200, 250),
+                             1)
+            pygame.draw.rect(progress_bar_sur, (0, 255, 0),
+                             pygame.Rect(100, HEIGHT - 250, int(((WIDTH - 200) / 10000) * cnt), 100))
             SCREEN.blit(progress_bar_sur, (0, 0))
             pygame.display.flip()
     SCREEN.fill((0, 0, 0))
@@ -129,7 +147,7 @@ def play():
     pygame.mixer.music.set_volume(0.1)
     pygame.mixer.music.play(loops=-1)
     while True:
-        clock.tick(30)
+        clock.tick(25)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 end()
@@ -153,13 +171,15 @@ def play():
                          player.rect.height + player.vision_y * 2))
         if HARD:
             buffs.empty()
+            player.score -= 40
         SCREEN.fill((0, 0, 0))
         buffs.draw(SCREEN)
         user.draw(SCREEN)
         walls.draw(SCREEN)
-        if player.escaped:
+        if player.escaped or not player.score:
             black_screen()
             exit_to_main()
+            scoreboard(player)
             return
         pygame.display.flip()
 
@@ -175,4 +195,4 @@ def end():
 if __name__ == '__main__':
     main_menu()
 
-# TODO Overall: Few Levels, CSV, Scoreboard, Hard Mode
+# TODO: score booster, scoreboard

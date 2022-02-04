@@ -23,6 +23,8 @@ class LanternBuff(Buff):
         if pygame.sprite.spritecollideany(self, user):
             pygame.mixer.Sound("assets\\buff.ogg").play()
             self.player.mp += 2
+            self.player.score += 90000
+            self.player.lanter_pickup = True
             self.kill()
 
 
@@ -32,6 +34,8 @@ class BootsBuff(Buff):
         if pygame.sprite.spritecollideany(self, user):
             pygame.mixer.Sound("assets\\buff.ogg").play()
             self.player.speed += 5
+            self.player.score += 90000
+            self.player.boots_pickup = True
             self.kill()
 
 
