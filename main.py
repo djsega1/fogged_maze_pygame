@@ -5,11 +5,14 @@ from buffs import *
 from sprites import *
 from asset_loader import *
 from PIL import Image
-from csv import *
+from csv import reader, writer
 import os
 import keyboard
 
 pygame.init()
+pygame.display.set_caption('Fogged Maze')
+pygame.display.set_icon(pygame.transform.scale(pygame.image.load(f"assets\\BryceRight1.png"),
+                                               (SPRITES_WIDTH, SPRITES_HEIGHT)))
 with open("data.csv", "r+") as csvfile:
     for i in reader(csvfile, delimiter=";"):
         HARD = int(i[1])
@@ -76,6 +79,7 @@ def hard():
 
 
 def exit_to_main():
+    pygame.mouse.set_visible(True)
     user.empty()
     walls.empty()
     buffs.empty()
@@ -114,8 +118,9 @@ def scoreboard(results):
 def play():
     clock = pygame.time.Clock()
     player = Monty(1, 1, SPRITES_WIDTH, SPRITES_HEIGHT)
+    pygame.mouse.set_visible(False)
     black_screen()
-    user_progress = 1
+    user_progress = 2
     progress_bar_sur = pygame.Surface(SCREEN.get_size())
     lvl_file = Image.open(f'mazes\\maze{user_progress}.png')
     lvl_crop = lvl_file.crop((0, 0, 100, 100))
@@ -124,20 +129,20 @@ def play():
     cnt = 0
     for row in range(y):
         for col in range(x):
-            if lvl[row, col] == (0, 0, 0):
+            print(lvl[row, col])
+            if lvl[row, col][:3] == (0, 0, 0):
                 Wall(row, col, SPRITES_WIDTH, SPRITES_HEIGHT, player.x, player.y)
-            elif lvl[row, col] == (255, 255, 255):
+            elif lvl[row, col][:3] == (255, 255, 255):
                 Road(row, col, SPRITES_WIDTH, SPRITES_HEIGHT, player.x, player.y)
-            elif lvl[row, col] == (255, 0, 0):
+            elif lvl[row, col][:3] == (255, 0, 0):
                 BootsBuff(row, col, SPRITES_WIDTH, SPRITES_HEIGHT, player, "boots")
-            elif lvl[row, col] == (0, 255, 0):
+            elif lvl[row, col][:3] == (0, 255, 0):
                 LanternBuff(row, col, SPRITES_WIDTH, SPRITES_HEIGHT, player, "lantern")
-            elif lvl[row, col] == (0, 0, 255):
-                Exit(row, col, SPRITES_WIDTH, SPRITES_WIDTH, player, 'exit_portal')
+            elif lvl[row, col][:3] == (0, 0, 255):
+                Exit(row, col, SPRITES_WIDTH, SPRITES_WIDTH, player, 'portal1')
             cnt += 1
-            # pygame.draw.rect(progress_bar_sur, (255, 255, 255), pygame.Rect(500, 500, 500 * (cnt // 10000), 250))
-            pygame.draw.rect(progress_bar_sur, (128, 128, 128), pygame.Rect(HEIGHT - 250, WIDTH - 25, WIDTH - 200, 250),
-                             1)
+            pygame.draw.rect(progress_bar_sur, (128, 128, 128),
+                             pygame.Rect(HEIGHT - 250, WIDTH - 25, WIDTH - 200, 250), 1)
             pygame.draw.rect(progress_bar_sur, (0, 255, 0),
                              pygame.Rect(100, HEIGHT - 250, int(((WIDTH - 200) / 10000) * cnt), 100))
             SCREEN.blit(progress_bar_sur, (0, 0))
