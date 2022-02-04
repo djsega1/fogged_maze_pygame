@@ -34,6 +34,7 @@ class Monty(Sprite):
         self.ind = 0
         self.SPRITES_WIDTH = SPRITES_WIDTH
         self.SPRITES_HEIGHT = SPRITES_HEIGHT
+        self.escaped = False
         self.mp = 2
         self.vision_x = self.mp * SPRITES_WIDTH
         self.vision_y = self.mp * SPRITES_HEIGHT

@@ -1,5 +1,8 @@
+import os
+
 import pygame
 import sys
+from csv import reader, writer
 from buttons import *
 from buffs import *
 from sprites import *
@@ -7,6 +10,11 @@ from asset_loader import *
 from maps import levels
 
 pygame.init()
+with open("data.csv", "r+") as csvfile:
+    for i in reader(csvfile, delimiter=";"):
+        HARD = int(i[1])
+        HIGH = int(i[0])
+        break
 
 
 # Главное меню
@@ -30,36 +38,54 @@ def main_menu():
         PLAY_BUTTON = Button(image=None, pos=(int(WIDTH * 0.2), int(WIDTH * 0.25)),
                              text_input="PLAY", font=get_font(int(0.06 * HEIGHT)),
                              base_color="#694916", hovering_color="#bd8428")
-        # OPTIONS_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 400),
-        #                         text_input="OPTIONS", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
+        if HARD:
+            base_color, hovering_color = "Red", "White"
+        else:
+            base_color, hovering_color = "White", "Red"
+        MODE_BUTTON = Button(image=None, pos=(int(WIDTH * 0.55), int(HEIGHT * 0.8)),
+                             text_input="HARD MODE", font=get_font(int(0.06 * HEIGHT)),
+                             base_color=base_color, hovering_color=hovering_color)
         QUIT_BUTTON = Button(image=None, pos=(int(WIDTH * 0.2), int(WIDTH * 0.35)),
                              text_input="QUIT", font=get_font(int(0.06 * HEIGHT)),
                              base_color="#694916", hovering_color="#bd8428")
         SCREEN.blit(MENU_TEXT, MENU_RECT)
         SCREEN.blit(image, (int(WIDTH * 0.65), MENU_RECT.top + MENU_RECT.h))
-        for button in [PLAY_BUTTON, QUIT_BUTTON]:
+        for button in [PLAY_BUTTON, QUIT_BUTTON, MODE_BUTTON]:
             button.changeColor(MENU_MOUSE_POS)
             button.update(SCREEN)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+                end()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
                     play()
-                # if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
-                #     options()
+                if MODE_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    hard()
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    pygame.quit()
-                    sys.exit()
+                    end()
         now_time += 30 / 1000
         pygame.display.flip()
 
 
-# Запуск уровня
-def play():
-    clock = pygame.time.Clock()
-    player = Monty(1, 1, SPRITES_WIDTH, SPRITES_HEIGHT)
+def hard():
+    global HARD
+    if HARD:
+        HARD = 0
+    else:
+        HARD = 1
+
+
+def exit_to_main():
+    user.empty()
+    walls.empty()
+    buffs.empty()
+    SCREEN.set_clip((0, 0, WIDTH, HEIGHT))
+    pygame.mixer.music.load("assets\\main.mp3")
+    pygame.mixer.music.set_volume(0.1)
+    pygame.mixer.music.play(loops=-1)
+
+
+def black_screen():
     s = pygame.Surface((WIDTH, HEIGHT))
     s.fill((0, 0, 0))
     for opacity in range(0, 255, 20):
@@ -67,6 +93,13 @@ def play():
         SCREEN.blit(s, (0, 0))
         pygame.display.flip()
         pygame.time.delay(100)
+
+
+# Запуск уровня
+def play():
+    clock = pygame.time.Clock()
+    player = Monty(1, 1, SPRITES_WIDTH, SPRITES_HEIGHT)
+    black_screen()
     lvl = levels[1]
     for row in range(len(lvl)):
         for col in range(len(lvl[row])):
@@ -78,6 +111,8 @@ def play():
                 BootsBuff(col, row, SPRITES_WIDTH, SPRITES_HEIGHT, player, "boots")
             elif lvl[row][col] == 3:
                 LanternBuff(col, row, SPRITES_WIDTH, SPRITES_HEIGHT, player, "lantern")
+            elif lvl[row][col] == 9:
+                Exit(col, row, SPRITES_WIDTH, SPRITES_HEIGHT, player, "lantern")
     pygame.mixer.music.load("assets\\level.mp3")
     pygame.mixer.music.set_volume(0.1)
     pygame.mixer.music.play(loops=-1)
@@ -85,16 +120,10 @@ def play():
         clock.tick(30)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+                end()
             if pygame.key.get_pressed()[pygame.K_ESCAPE]:
-                user.empty()
-                walls.empty()
-                buffs.empty()
-                SCREEN.set_clip((0, 0, WIDTH, HEIGHT))
-                pygame.mixer.music.load("assets\\main.mp3")
-                pygame.mixer.music.set_volume(0.1)
-                pygame.mixer.music.play(loops=-1)
+                black_screen()
+                exit_to_main()
                 return
         last_pos = (player.rect.x, player.rect.y)
         user.update(pygame.key.get_pressed())
@@ -110,14 +139,28 @@ def play():
         SCREEN.set_clip((player.rect.left - player.vision_x, player.rect.top - player.vision_y,
                          player.rect.width + player.vision_x * 2,
                          player.rect.height + player.vision_y * 2))
+        if HARD:
+            buffs.empty()
         SCREEN.fill((0, 0, 0))
         buffs.draw(SCREEN)
         user.draw(SCREEN)
         walls.draw(SCREEN)
+        if player.escaped:
+            black_screen()
+            exit_to_main()
+            return
         pygame.display.flip()
+
+
+def end():
+    os.remove("data.csv")
+    with open("data.csv", "w") as csvfile:
+        writer(csvfile, delimiter=";").writerow([HIGH, HARD])
+    pygame.quit()
+    sys.exit()
 
 
 if __name__ == '__main__':
     main_menu()
 
-# TODO Overall: Few Levels, CSV, Scoreboard, Hard Mode
+# TODO Overall: Few Levels, Scoreboard, Hard Mode, remove cursor

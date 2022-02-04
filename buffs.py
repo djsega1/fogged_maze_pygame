@@ -35,14 +35,10 @@ class BootsBuff(Buff):
             self.kill()
 
 
-# Проклятье тумана
-class FogCurse(Buff):
-    pass
-
-
-# Проклятье ходьбы
-class StepCurse(Buff):
-    pass
+class Exit(Buff):
+    def update(self):
+        if pygame.sprite.spritecollideany(self, user):
+            self.player.escaped = True
 
 
 buffs = SpriteGroup()
