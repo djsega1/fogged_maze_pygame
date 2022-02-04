@@ -86,8 +86,8 @@ def play():
                 LanternBuff(row, col, SPRITES_WIDTH, SPRITES_HEIGHT, player, "lantern")
             cnt += 1
             # pygame.draw.rect(progress_bar_sur, (255, 255, 255), pygame.Rect(500, 500, 500 * (cnt // 10000), 250))
-            pygame.draw.rect(progress_bar_sur, (128, 128, 128), pygame.Rect(500, 500, 500, 250), 1)
-            pygame.draw.rect(progress_bar_sur, (0, 255, 0), pygame.Rect(500, 500, int((10000 / 10000) * cnt), 250))
+            pygame.draw.rect(progress_bar_sur, (128, 128, 128), pygame.Rect(HEIGHT - 250, WIDTH - 25, WIDTH - 200, 250), 1)
+            pygame.draw.rect(progress_bar_sur, (0, 255, 0), pygame.Rect(250, HEIGHT - 250, int(((WIDTH - 200) / 10000) * cnt), 250))
             SCREEN.blit(progress_bar_sur, (0, 0))
             pygame.display.flip()
     SCREEN.fill((0, 0, 0))
